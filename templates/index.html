@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+  {% for item in content %}
+    <div class="single_post">
+      <header>{{ item.title }}</header>
+      <p>{{ item.body|join('<br />')|safe }}</p>
+      <footer>{{ item.post_date }}</footer>
+    </div>
+  {% endfor %}
+{% endblock %}

@@ -1,0 +1,4 @@
+title: to do
+date: 2018-04-09 A
+---
+There are several things to do before this is (maybe) published somewhere. First, formatting text to include links. (It probably won't ever include images. Lightweight publishing is the idea here). Second is to define the .txt file format to allow for sorting. Because of the filesystem, it defaults to alphabetical by title, which isn't always helpful.
