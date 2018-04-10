@@ -22,12 +22,11 @@ def index():
                 content.append(item)
 
     sorted_content = sorted(content, key=lambda blog: blog.post_date, reverse=True)
-    print(sorted_content)
+
     return render_template('index.html', content=sorted_content)
 
 def parse_txt_file(item):
     txt = item.readlines()
-    txt = [line.strip() for line in txt]
     for i, line in enumerate(txt):
 
         if "title: " in txt[i]:
@@ -39,7 +38,8 @@ def parse_txt_file(item):
         if "---" in txt[i]:
             body = txt[i+1:]
 
-    print(body)
+    body = [line.rstrip() for line in body if line.rstrip()]
+
     item = make_item(title, post_date, body)
     return item
 
