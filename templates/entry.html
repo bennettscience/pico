@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block entry_content %}
+    <div class="single_post" id="{{content.slug}}">
+      <header><a href="/post/{{ content.slug }}" class="title">{{ content.title }}</a></header>
+      <p>{{ content.body|join('<br />')|safe }}</p>
+      <footer>{{ content.post_date }}</footer>
+    </div>
+{% endblock %}
