@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, url_for
-import os, glob, datetime, re, string
+from flask import Flask, render_template, request, jsonify, url_for
+from slugify import slugify
+import os, glob, datetime, re, string, sys
 from urllib.parse import urlparse
 from werkzeug.contrib.atom import AtomFeed
 
@@ -7,17 +8,46 @@ from werkzeug.contrib.atom import AtomFeed
 app = Flask(__name__)
 app.config.from_pyfile('settings.py')
 
-@app.route('/')
+dir = os.listdir('files')
 
+def make_item(title, post_date, body):
+    item = Entry(title, post_date, body)
+    return item
+
+class Entry(object):
+    title = ""
+    body = ""
+    post_date = ""
+    slug = ""
+
+    def __init__(self, title="", post_date="", body=""):
+        self.title = title
+        self.post_date = post_date
+        self.body = body
+        self.slug = slugify(title)
+
+def check_for_title(file, slug):
+    # print(file, slug)
+    with open('files/' + file, 'r') as f:
+        txt = f.readlines()
+        for i, line in enumerate(txt):
+            if "title: " in txt[i]:
+                title = slugify(txt[i][7:].rstrip().lower())
+                # print(title)
+
+            if title == slug:
+                return True
+            else:
+                return False
+
+@app.route('/')
 def index():
     content = []
-
-    dir = os.listdir('files')
 
     for file in dir:
         if not file.startswith('.'):
             with open('files/' + file, 'r') as f:
-                item = parse_txt_file(f)
+                item = process_text_file(f)
 
                 content.append(item)
 
@@ -25,7 +55,18 @@ def index():
 
     return render_template('index.html', content=sorted_content)
 
-def parse_txt_file(item):
+@app.route('/post/<slug>')
+def single_post(slug):
+
+    for file in dir:
+        if not file.startswith('.'):
+            # print('not a dotfile, opening and reading')
+            with open('files/' + file, 'r') as f:
+                if check_for_title(file, slug):
+                    item = process_text_file(f)
+                    return render_template('entry.html', content=item)
+
+def process_text_file(item):
     txt = item.readlines()
     for i, line in enumerate(txt):
 
@@ -43,26 +84,12 @@ def parse_txt_file(item):
     item = make_item(title, post_date, body)
     return item
 
-def make_item(title, post_date, body):
-    item = Blog(title, post_date, body)
-    return item
-
-class Blog(object):
-    title = ""
-    body = ""
-    post_date = ""
-
-    def __init__(self, title="", post_date="", body=""):
-        self.title = title
-        self.post_date = post_date
-        self.body = body
-
-def make_external(url):
-    return urljoin(request.url_root, url)
-
 
 # TODO: Create ATOM feed from txt files
 @app.route('/recent.atom')
+def make_external(url):
+    return urljoin(request.url_root, url)
+
 def recent_feed():
     feed = AtomFeed('Recent Articles',feed_url=request.url, url=request.url_root)
     articles = glob.glob('files/*.txt')
