@@ -2,7 +2,8 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>{{ config.SITE_TITLE }}</title>
+    <title>{{ site.title }}</title>
+    <meta name="author" content="{{ site.author }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css')}}">
   </head>
   <body>
