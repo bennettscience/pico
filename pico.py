@@ -1,12 +1,21 @@
-from flask import Flask, render_template, request, jsonify, url_for
+# https://gist.github.com/bretthancox/4cce4193fa0468f3d3cbafb7bc2fb028
+# Modify the Flask config object to read from YML rathern than a Python Class
+from flask_extended import Flask
+
+from flask import render_template, request, jsonify, url_for
 from slugify import slugify
 import os, glob, re, string, sys, yaml
 
 
 app = Flask(__name__)
-app.config.from_pyfile('settings.py')
+app.config.from_yaml(os.path.join(app.root_path, 'config.yml'))
 
 dir = os.listdir('files')
+
+def get_config():
+    stream = open('config.yml', 'r')
+    config = yaml.load(stream)
+    return config
 
 def make_item(title, post_date, body):
     item = Entry(title, post_date, body)
@@ -38,16 +47,11 @@ def check_for_title(file, slug):
             else:
                 return False
 
-def get_nav():
-    stream = open('config.yaml', 'r')
-    nav = yaml.load(stream)
-    return nav
-
 @app.route('/')
 def index():
 
-    nav = get_nav()
-    
+    config = get_config()
+
     content = []
 
     for file in dir:
@@ -59,11 +63,13 @@ def index():
 
     sorted_content = sorted(content, key=lambda blog: blog.post_date, reverse=True)
 
-    return render_template('index.html', content=sorted_content, nav=nav['social'])
+    print(app.config)
+
+    return render_template('index.html', content=sorted_content, nav=config['SOCIAL'], site=config['SITE'])
 
 @app.route('/post/<slug>')
 def single_post(slug):
-    nav = get_nav()
+    config = get_config()
 
     for file in dir:
         if not file.startswith('.'):
@@ -71,7 +77,7 @@ def single_post(slug):
             with open('files/' + file, 'r') as f:
                 if check_for_title(file, slug):
                     item = process_text_file(f)
-                    return render_template('entry.html', content=item, nav=nav['social'])
+                    return render_template('entry.html', content=item, nav=config['SOCIAL'], site=config )
 
 def process_text_file(item):
     txt = item.readlines()

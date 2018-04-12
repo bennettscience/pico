@@ -1,0 +1,26 @@
+COMMON: &common
+  SECRET_KEY: insecure
+  DEBUG: True
+
+DEVELOPMENT: &development
+  <<: *common
+  DEBUG: True
+
+STAGING: &staging
+  <<: *common
+  SECRET_KEY: sortasecure
+
+PRODUCTION: &production
+  <<: *common
+  SECRET_KEY: shouldbereallysecureatsomepoint
+
+SITE:
+  title:    'Pico'
+  txt_path: 'files/'
+  author:   'Brian Bennett'
+
+SOCIAL:
+  - {title: 'twitter', url: 'https://www.twitter.com/bennettscience'}
+  - {title: 'mastodon', url: 'https://fosstodon.org/@brian'}
+  - {title: 'github', url: 'https://github.com/bennettscience'}
+  - {title: 'about', url: 'https://ohheybrian.com'}
