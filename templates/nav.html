@@ -1,12 +1,8 @@
 <nav>
   <ul>
     <li><a href="{{ url_for('index') }}">Home</a>
-  </ul>
-</nav>
-<div id="social">
-  <ul>
     {% for item in nav %}
       <li><a href="{{ item.url }}">{{ item.title }}</a></li>
     {% endfor%}
   </ul>
-</div>
+</nav>
