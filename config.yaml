@@ -1,0 +1,5 @@
+social:
+  - {title: 'twitter', url: 'https://www.twitter.com/bennettscience'}
+  - {title: 'mastodon', url: 'https://fosstodon.org/@brian'}
+  - {title: 'github', url: 'https://github.com/bennettscience'}
+  - {title: 'about', url: 'https://ohheybrian.com'}
