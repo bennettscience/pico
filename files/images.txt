@@ -1,6 +1,0 @@
-title: Images
-date: 2018-04-09 B
----
-What does a full image embed look like?
-
-<a title="Dog" href="https://flickr.com/photos/infomastern/31981671913"><img src="https://farm1.static.flickr.com/381/31981671913_92c31fb05d_z.jpg" /></a><br /><small><a title="Dog" href="https://flickr.com/photos/infomastern/31981671913">Dog</a> flickr photo by <a href="https://flickr.com/people/infomastern">Infomastern</a> shared under a <a href="https://creativecommons.org/licenses/by-sa/2.0/">Creative Commons (BY-SA) license</a> </small>

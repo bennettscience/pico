@@ -1,0 +1,18 @@
+title: What Can It Do?
+date: 2018-04-09 A
+---
+Pico is mean to be ultra-lightweight. Coming in around 10KB <i>total</i>, it's bare bones writing and publishing.
+
+Once it's running, you can add text files to a directory and the browser does the rest. Text is wrapped in <code>p</code> tags and displayed in a clean, easy to read window. No logins, no database, and no online editor. Write anywhere and publish anywhere.
+
+Files have two lines of metadata: a title and a publishing date (for indexing). If you don't care about the publish date, you can omit it and posts will be displayed alphabetically.
+
+Since each file is plaintext that renders to HTML, you can still reference images as long as you can get a URI for that image.
+
+Images are automatically resized to fit inside the viewport so you shouldn't have any bleeding off the edge of the screen.
+
+<a title="Denali Sunrise" href="https://flickr.com/photos/sandybrownjensen/15238026366"><img src="https://farm4.static.flickr.com/3916/15238026366_fb00ed23a0_z.jpg" /></a><br /><small><a title="Denali Sunrise" href="https://flickr.com/photos/sandybrownjensen/15238026366">Denali Sunrise</a> flickr photo by <a href="https://flickr.com/people/sandybrownjensen">Mind on Fire Photography</a> shared under a <a href="https://creativecommons.org/licenses/by-sa/2.0/">Creative Commons (BY-SA) license</a> </small>
+
+Markdown formatting is not supported at this time.
+
+<a href="/post/to-do">That's okay...what's coming next?</a>

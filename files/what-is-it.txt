@@ -3,4 +3,6 @@ date: 2018-04-09
 ---
 Pico is an experiment, mostly. Running flat-file or no-database blogs isn't as hard as it used to be, but they can still take up significant server resources.
 
-Pico is a Flask app that reads plaintext files stored on your server and formats them as simple HTML posts. Right now, nothing works except reading the files and displaying them in the same order they appear in the directory.
+Pico is a Flask app that reads plaintext files stored on your server and formats them as simple HTML posts.
+
+<a href="/post/what-can-it-do">I'm still interested!</a>

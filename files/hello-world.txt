@@ -3,4 +3,4 @@ date: 2018-04-08
 ---
 This is a post written for pico, a tiny Python blogging platform.
 
-<a href="https://www.google.com/">Google</a>
+<a href="/post/what-is-it">Read more about Pico</a>
