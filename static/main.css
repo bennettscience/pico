@@ -3,11 +3,30 @@ html, body {
   height: 100%;
   padding: 0;
   margin: 0;
+
+}
+main {
+  display:grid;
+  grid-template-columns:20% 1fr;
+  grid-gap: 5px;
+  width:75%;
+  height:100%;
+  margin:0 auto;
+}
+#left { grid-column: 1 }
+#right { grid-column: 2 }
+
+#left ul {
+  list-style-type: none;
+  font-family:sans-serif;
+}
+#left ul li {
+  padding-bottom: 5px;
 }
 #container {
   display:block;
   box-sizing: border-box;
-  width: 65%;
+  width: 100%;
   margin: 0 auto;
   padding: 15px;
 }
