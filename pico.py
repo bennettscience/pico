@@ -1,7 +1,6 @@
 # https://gist.github.com/bretthancox/4cce4193fa0468f3d3cbafb7bc2fb028
 # Modify the Flask config object to read from YML rathern than a Python Class
 from flask_extended import Flask
-
 from flask import render_template, request, jsonify, url_for
 from slugify import slugify
 import os, glob, re, string, sys, yaml
@@ -47,6 +46,12 @@ def check_for_title(file, slug):
             else:
                 return False
 
+@app.errorhandler(404)
+def page_not_found(e):
+    config = get_config()
+
+    return render_template('404.html', nav=config['SOCIAL'], site=config['SITE']), 404
+
 @app.route('/')
 def index():
 
@@ -77,7 +82,7 @@ def single_post(slug):
             with open('files/' + file, 'r') as f:
                 if check_for_title(file, slug):
                     item = process_text_file(f)
-                    return render_template('entry.html', content=item, nav=config['SOCIAL'], site=config )
+                    return render_template('entry.html', content=item, nav=config['SOCIAL'], site=config['SITE'] )
 
 def process_text_file(item):
     txt = item.readlines()
@@ -96,27 +101,6 @@ def process_text_file(item):
 
     item = make_item(title, post_date, body)
     return item
-
-
-# TODO: Create ATOM feed from txt files
-# @app.route('/recent.atom')
-# def make_external(url):
-#     return urljoin(request.url_root, url)
-#
-# def recent_feed():
-#     feed = AtomFeed('Recent Articles',feed_url=request.url, url=request.url_root)
-#     articles = glob.glob('files/*.txt')
-#
-#     for article in articles:
-#         article = parse_txt_file(article)
-#         feed.add(article.title, article.body,
-#                  content_type='html',
-#                  # author=article.author.name,
-#                  url=make_external(article.url),
-#                  # updated=article.last_update,
-#                  published=article.published)
-#     return feed.get_response()
-
 
 if __name__ == "__main__":
     app.run()

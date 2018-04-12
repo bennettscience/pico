@@ -57,9 +57,13 @@ p {
   font-family:serif;
   font-size:18px;
   line-height: 1.4;
-  margin-bottom: 5px;
+  margin:0.5em 0;
 }
-img { max-width: 100% }
+img {
+  width: 100%;
+  max-width: 100%;
+  margin: 15px 0;
+}
 footer {
   font-size: 12px;
   color: #1d1d1d;
