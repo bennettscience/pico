@@ -5,6 +5,7 @@ from flask import render_template, request, jsonify, url_for
 from slugify import slugify
 import os, glob, re, string, sys, yaml
 
+# TODO: Build absolute paths for all URLs
 
 app = Flask(__name__)
 app.config.from_yaml(os.path.join(app.root_path, 'config.yml'))
@@ -26,11 +27,12 @@ class Entry(object):
     post_date = ""
     slug = ""
 
+# TODO: Relative path for slug
     def __init__(self, title="", post_date="", body=""):
         self.title = title
         self.post_date = post_date
         self.body = body
-        self.slug = slugify(title)
+        self.slug = "post/" + slugify(title)
 
 def check_for_title(file, slug):
     # print(file, slug)

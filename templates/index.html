@@ -3,7 +3,7 @@
 {% block content %}
   {% for item in content %}
     <div class="single_post" id="{{item.slug}}">
-      <header><a href="/post/{{ item.slug }}" class="title">{{ item.title }}</a></header>
+      <header><a href="{{ request.url_root }}{{ item.slug }}" class="title">{{ item.title }}</a></header>
       <footer>{{ item.post_date }}</footer>
     </div>
   {% endfor %}
