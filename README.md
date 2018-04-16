@@ -26,10 +26,13 @@ I've also deployed Pico successfully on [PythonAnywhere](https://pythonanywhere.
 
 You can also deploy on any compatible server environment [as documented on the Flask homepage](http://flask.pocoo.org/docs/0.12/deploying/).
 
+## Configuration
+
+Edit `config.yml` with data you'd like to include. You can define your own object keys and values as well, but you'll need to modify templates in order for that data to be displayed on the site.
+
 ## Known Issues
 
   - The main layout uses a grid. This can cause some display differences depending on your browser.
-  - Pico does not include built-in RSS or Atom feeds.
   - There is no commenting.
 
 ## Want to contribute?

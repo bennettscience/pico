@@ -15,12 +15,13 @@ PRODUCTION: &production
   SECRET_KEY: shouldbereallysecureatsomepoint
 
 SITE:
-  title:    'Pico'
+  title:    'Your Site Title'
   txt_path: 'files/'
-  author:   'Brian Bennett'     # Appended to <author> tag in RSS feed if configured
+  author:   'Your name'     # Appended to <author> tag in RSS feed if configured
 
 SOCIAL:
-  - {title: 'twitter', url: 'https://www.twitter.com/bennettscience'}
-  - {title: 'mastodon', url: 'https://fosstodon.org/@brian'}
-  - {title: 'github', url: 'https://github.com/bennettscience'}
-  - {title: 'about', url: 'https://ohheybrian.com'}
+  - {title: 'twitter', url: 'https://www.twitter.com/some_user_name'}
+  - {title: 'mastodon', url: 'https://fosstodon.org/'}
+  - {title: 'facebook', url: 'https://facebook.com'}
+  - {title: 'github', url: 'https://github.com/'}
+  - {title: 'about', url: 'Your homepage'}
