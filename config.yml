@@ -17,7 +17,7 @@ PRODUCTION: &production
 SITE:
   title:    'Pico'
   txt_path: 'files/'
-  author:   'Brian Bennett'
+  author:   'Brian Bennett'     # Appended to <author> tag in RSS feed if configured
 
 SOCIAL:
   - {title: 'twitter', url: 'https://www.twitter.com/bennettscience'}

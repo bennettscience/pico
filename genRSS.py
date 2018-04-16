@@ -24,7 +24,8 @@ import urllib.parse
 import mimetypes
 import argparse
 import re
-# import flask_extended import Flask
+import yaml
+from flask_extended import Flask
 
 from optparse import OptionParser
 
@@ -37,6 +38,10 @@ DEBUG = 0
 TESTRUN = 0
 PROFILE = 0
 
+def get_config():
+    stream = open('config.yml', 'r')
+    config = yaml.load(stream)
+    return config
 
 def getFiles(dirname, extensions=None, recursive=False):
     '''
@@ -108,7 +113,7 @@ def getFiles(dirname, extensions=None, recursive=False):
     return sorted(set(selectedFiles))
 
 
-def buildItem(link, title, guid = None, description="", pubDate=None, indent = "   ", extraTags=None):
+def buildItem(link, title, guid = None, description="", pubDate=None, indent = "   ", author="", extraTags=None):
     '''
     Generate a RSS 2 item and return it as a string.
 
@@ -228,6 +233,7 @@ def buildItem(link, title, guid = None, description="", pubDate=None, indent = "
     link = "{0}<link>{1}</link>\n".format(indent * 3, link)
     title = "{0}<title>{1}</title>\n".format(indent * 3, title)
     descrption = "{0}<description>{1}</description>\n".format(indent * 3, description)
+    author = "{0}<author>{1}</author>\n".format(indent * 3, author)
 
     if pubDate is not None:
         pubDate = "{0}<pubDate>{1}</pubDate>\n".format(indent * 3, pubDate)
@@ -253,8 +259,8 @@ def buildItem(link, title, guid = None, description="", pubDate=None, indent = "
             extra += "{0}<{1}{2}".format(indent * 3, name, params)
             extra += "{0}\n".format("/>" if value is None else ">{0}</{1}>".format(value, name))
 
-    return "{0}<item>\n{1}{2}{3}{4}{5}{6}{0}</item>".format(indent * 2, guid, link, title,
-                                                            descrption, pubDate, extra)
+    return "{0}<item>\n{1}{2}{3}{4}{5}{6}{7}{0}</item>".format(indent * 2, guid, link, title,
+                                                            descrption, pubDate, author, extra)
 
 
 def fileToItem(host, fname, pubDate):
@@ -306,6 +312,7 @@ def fileToItem(host, fname, pubDate):
           </item>
     '''
     fileURL = urllib.parse.quote(host + fname.replace("\\", "/"), ":/")[:-4]
+    config = get_config()
     # fileMimeType = mimetypes.guess_type(fname)[0]
 
     # if fileMimeType is not None and ("audio" in fileMimeType or "video" in fileMimeType or "text" in fileMimeType):
@@ -315,21 +322,29 @@ def fileToItem(host, fname, pubDate):
     # else:
     enclosure = None
 
+    desc = get_desc(fname)
+
     fname = fname.replace("-", " ")[6:-4]
     fname = re.sub("(^|\s)(\S)", repl_func, fname)
-    print(fileURL, fname)
 
+    author = config['SITE']['author']
+    print(author)
 
     return buildItem(link=fileURL, title=os.path.basename(fname),
-                     guid=fileURL, description=os.path.basename(fname),
-                     pubDate=pubDate, extraTags=[enclosure])
+                     guid=fileURL, description=desc,
+                     pubDate=pubDate, author=author, extraTags=[enclosure])
+
+def get_desc(fname):
+    with open(fname, 'r') as fp:
+        for i, line in enumerate(fp):
+            if(i == 3):
+                return line.rstrip()
 
 def repl_func(m):
     """process regular expression match groups for word upper-casing problem"""
     return m.group(1) + m.group(2).upper()
 
 def main(argv=None):
-
     program_name = os.path.basename(sys.argv[0])
     program_version = "v0.1"
     program_build_date = "%s" % __updated__
@@ -403,6 +418,7 @@ def main(argv=None):
         if not host.lower().startswith("http://") and not host.lower().startswith("https://"):
             host = "http://" + host
 
+        author = ""
         title = ""
         description = ""
         link = host
@@ -443,7 +459,6 @@ def main(argv=None):
             # and the n-th item, (now - (n)) minutes and f seconds ago.
             # f is a random number of seconds between 0 and 10 (float)
             now = time.time()
-            print(now)
             import random
             pubDates = [now - (60 * 60 * 24 * d + (random.random() * 10)) for d in range(len(fileNames))]
             sortedFiles = zip(fileNames, pubDates)

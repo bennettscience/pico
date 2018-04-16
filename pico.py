@@ -8,6 +8,7 @@ import os, glob, re, string, sys, yaml
 # TODO: Build absolute paths for all URLs
 
 app = Flask(__name__)
+application = app
 app.config.from_yaml(os.path.join(app.root_path, 'config.yml'))
 
 dir = os.listdir('files')
@@ -32,7 +33,7 @@ class Entry(object):
         self.title = title
         self.post_date = post_date
         self.body = body
-        self.slug = "post/" + slugify(title)
+        self.slug = "files/" + slugify(title)
 
 def check_for_title(file, slug):
     # print(file, slug)
@@ -74,7 +75,7 @@ def index():
 
     return render_template('index.html', content=sorted_content, nav=config['SOCIAL'], site=config['SITE'])
 
-@app.route('/post/<slug>')
+@app.route('/files/<slug>')
 def single_post(slug):
     config = get_config()
 
@@ -105,4 +106,4 @@ def process_text_file(item):
     return item
 
 if __name__ == "__main__":
-    app.run()
+    app.run(DEBUG=True)
