@@ -16,10 +16,19 @@ PRODUCTION: &production
 
 SITE:
   title:    'Your Site Title'
-  path_to_use: 'local'     # Accepts either "local" or "remote"
+  # Define a file path as either `local` or `remote`
+  # Local files can be any public, web server directory
+  # Remote only supports GitHub repos right now
+  path_to_use: ''
+
+  # Path to use for local files. Absolute paths are safer than relative
   local_path: 'files/'
-  remote_path: 'https://api.github.com/repos/bennettscience/micro/contents/files'
-  author:   'Your name'     # Appended to <author> tag in RSS feed if configured
+
+  # Path to your GitHub repo. Change your :username, :repo, and :dir in the string.
+  remote_path: 'https://api.github.com/repos/:username/:repo/contents/:dir'
+
+  # Appended to <author> tag in RSS feed if configured
+  author:   'Your name'
 
 SOCIAL:
   - {title: 'twitter', url: 'https://www.twitter.com/some_user_name'}

@@ -3,7 +3,7 @@
 from flask_extended import Flask
 from flask import render_template, request, jsonify, url_for
 from slugify import slugify
-import os, glob, re, string, sys, yaml, requests, base64
+import os, glob, re, string, sys, yaml, requests
 
 # TODO: Build absolute paths for all URLs
 
@@ -42,44 +42,38 @@ class Entry(object):
         self.body = body
         self.slug = "files/" + slugify(title)
 
-def check_for_title(path, file, slug):
-    print(path, file, slug)
-    with open(path + file, 'r') as f:
-        txt = f.readlines()
-        for i, line in enumerate(txt):
-            if "title: " in txt[i]:
-                title = slugify(txt[i][7:].rstrip().lower())
-                # print(title)
+def check_for_title(txt, slug):
+    for i, line in enumerate(txt):
+        if "title: " in txt[i]:
+            title = slugify(txt[i][7:].rstrip().lower())
+            # print(title, slug)
 
             if title == slug:
+                # print("Matched title and slug, return True")
                 return True
             else:
+                # print("They did not match, return False")
                 return False
 
 @app.errorhandler(404)
 def page_not_found(e):
     config = get_config()
-
     return render_template('404.html', nav=config['SOCIAL'], site=config['SITE']), 404
 
 @app.route('/')
 def index():
-
     config = get_config()
-
     content = []
 
     if config['SITE']['path_to_use'] == 'local':
-        # path = config['SITE']['local_path']
         dir = os.listdir(path)
         for file in dir:
             if not file.startswith('.'):
                 with open(path + file, 'r') as f:
-                    item = process_text_file(f)
+                    item = process_text_file(f.readlines())
                     content.append(item)
 
     elif config['SITE']['path_to_use'] == 'remote':
-        # path = config['SITE']['remote_path']
         req = requests.get(path).json()
         for f in req:
             item = process_json_file(f)
@@ -103,18 +97,28 @@ def single_post(slug):
             if not file.startswith('.'):
                 # print('not a dotfile, opening and reading')
                 with open(path + file, 'r') as f:
-                    if check_for_title(path, file, slug):
-                        item = process_text_file(f)
-
+                    txt = f.readlines()
+                    if check_for_title(txt, slug):
+                        # print("Matched a title and slug")
+                        item = process_text_file(txt)
+                        break
     elif config['SITE']['path_to_use'] == 'remote':
-        print("Do something else")
+        req = requests.get(path).json()
+        for f in req:
+            item = requests.get(f['download_url'])
+            str = item.content.decode('ascii')
+            txt = str.split('\n')
+            if check_for_title(txt, slug):
+                # print("Processing the text for display")
+                item = process_text_file(txt)
+                break
     else:
-        raise ValueError('No path defined in config')
+        return render_template('entry.html', content="Define a path in config.yml", nav=config['SOCIAL'], site=config['SITE'])
 
     return render_template('entry.html', content=item, nav=config['SOCIAL'], site=config['SITE'] )
 
-def process_text_file(item):
-    txt = item.readlines()
+def process_text_file(txt):
+    # print("Processing the list")
     for i, line in enumerate(txt):
 
         if "title: " in txt[i]:
@@ -128,6 +132,7 @@ def process_text_file(item):
 
     body = [line.rstrip() for line in body if line.rstrip()]
 
+    # print(title, post_date, body)
     item = make_item(title, post_date, body)
     return item
 
@@ -137,17 +142,8 @@ def process_json_file(item):
 
     txt = str.split('\n')
 
-    for  i, line in enumerate(txt):
-        if "title: " in txt[i]:
-            title = txt[i][7:]
+    item = process_text_file(txt)
 
-        if "date: " in txt[i]:
-            post_date = txt[i][6:]
-
-        if "---" in txt[i]:
-            body = txt[i+1:]
-
-    item = make_item(title, post_date, body)
     return item
 
 
