@@ -18,12 +18,6 @@ app.config.from_yaml(os.path.join(app.root_path, 'config.yml'))
 
 config = get_config()
 
-dir = os.listdir(config['SITE']['local_path'])
-print(config['SITE']['local_path'])
-
-remote_dir = config['SITE']['remote_path']
-print(remote_dir)
-
 def make_item(title, post_date, body):
     item = Entry(title, post_date, body)
     return item
@@ -70,26 +64,22 @@ def index():
 
     if config['SITE']['path_to_use'] == 'local':
         path = config['SITE']['local_path']
+        for file in path:
+            if not file.startswith('.'):
+                with open(path + file, 'r') as f:
+                    item = process_text_file(f)
+                    content.append(item)
+
     elif config['SITE']['path_to_use'] == 'remote':
         path = config['SITE']['remote_path']
         req = requests.get(path).json()
-        print(req)
-
         for f in req:
             item = process_json_file(f)
+            content.append(item)
     else:
         raise ValueError('No path defined in config')
 
-    for file in path:
-        if not file.startswith('.'):
-            with open(path + file, 'r') as f:
-                item = process_text_file(f)
-
-                content.append(item)
-
     sorted_content = sorted(content, key=lambda blog: blog.post_date, reverse=True)
-
-    print(app.config)
 
     return render_template('index.html', content=sorted_content, nav=config['SOCIAL'], site=config['SITE'])
 
@@ -124,11 +114,24 @@ def process_text_file(item):
     return item
 
 def process_json_file(item):
-    # item = process_text_file(item['download_url'])
     req = requests.get(item['download_url'])
-    # content = base64.decodestring(req['content'])
-    print(req.json())
-    return False
+    str = req.content.decode('ascii')
+    print(str)
+
+    txt = str.split('\n')
+
+    for  i, line in enumerate(txt):
+        if "title: " in txt[i]:
+            title = txt[i][7:]
+
+        if "date: " in txt[i]:
+            post_date = txt[i][6:]
+
+        if "---" in txt[i]:
+            body = txt[i+1:]
+
+    item = make_item(title, post_date, body)
+    return item
 
 
 if __name__ == "__main__":
