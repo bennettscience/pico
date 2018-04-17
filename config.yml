@@ -16,7 +16,7 @@ PRODUCTION: &production
 
 SITE:
   title:    'Your Site Title'
-  path_to_use: 'remote'
+  path_to_use: 'local'     # Accepts either "local" or "remote"
   local_path: 'files/'
   remote_path: 'https://api.github.com/repos/bennettscience/micro/contents/files'
   author:   'Your name'     # Appended to <author> tag in RSS feed if configured

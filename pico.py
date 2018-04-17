@@ -18,6 +18,13 @@ app.config.from_yaml(os.path.join(app.root_path, 'config.yml'))
 
 config = get_config()
 
+if config['SITE']['path_to_use'] == "local":
+    path = config['SITE']['local_path']
+elif config['SITE']['path_to_use'] == "remote":
+    path = config['SITE']['remote_path']
+else:
+    raise ValueError("No path set in config.yml")
+
 def make_item(title, post_date, body):
     item = Entry(title, post_date, body)
     return item
@@ -35,9 +42,9 @@ class Entry(object):
         self.body = body
         self.slug = "files/" + slugify(title)
 
-def check_for_title(file, slug):
-    # print(file, slug)
-    with open(dir + file, 'r') as f:
+def check_for_title(path, file, slug):
+    print(path, file, slug)
+    with open(path + file, 'r') as f:
         txt = f.readlines()
         for i, line in enumerate(txt):
             if "title: " in txt[i]:
@@ -63,15 +70,16 @@ def index():
     content = []
 
     if config['SITE']['path_to_use'] == 'local':
-        path = config['SITE']['local_path']
-        for file in path:
+        # path = config['SITE']['local_path']
+        dir = os.listdir(path)
+        for file in dir:
             if not file.startswith('.'):
                 with open(path + file, 'r') as f:
                     item = process_text_file(f)
                     content.append(item)
 
     elif config['SITE']['path_to_use'] == 'remote':
-        path = config['SITE']['remote_path']
+        # path = config['SITE']['remote_path']
         req = requests.get(path).json()
         for f in req:
             item = process_json_file(f)
@@ -87,13 +95,23 @@ def index():
 def single_post(slug):
     config = get_config()
 
-    for file in dir:
-        if not file.startswith('.'):
-            # print('not a dotfile, opening and reading')
-            with open(dir + file, 'r') as f:
-                if check_for_title(file, slug):
-                    item = process_text_file(f)
-                    return render_template('entry.html', content=item, nav=config['SOCIAL'], site=config['SITE'] )
+    if config['SITE']['path_to_use'] == 'local':
+        # path = config['SITE']['local_path']
+        dir = os.listdir(path)
+
+        for file in dir:
+            if not file.startswith('.'):
+                # print('not a dotfile, opening and reading')
+                with open(path + file, 'r') as f:
+                    if check_for_title(path, file, slug):
+                        item = process_text_file(f)
+
+    elif config['SITE']['path_to_use'] == 'remote':
+        print("Do something else")
+    else:
+        raise ValueError('No path defined in config')
+
+    return render_template('entry.html', content=item, nav=config['SOCIAL'], site=config['SITE'] )
 
 def process_text_file(item):
     txt = item.readlines()
@@ -116,7 +134,6 @@ def process_text_file(item):
 def process_json_file(item):
     req = requests.get(item['download_url'])
     str = req.content.decode('ascii')
-    print(str)
 
     txt = str.split('\n')
 
