@@ -3,20 +3,26 @@
 from flask_extended import Flask
 from flask import render_template, request, jsonify, url_for
 from slugify import slugify
-import os, glob, re, string, sys, yaml
+import os, glob, re, string, sys, yaml, requests, base64
 
 # TODO: Build absolute paths for all URLs
-
-app = Flask(__name__)
-application = app
-app.config.from_yaml(os.path.join(app.root_path, 'config.yml'))
-
-dir = os.listdir('files')
 
 def get_config():
     stream = open('config.yml', 'r')
     config = yaml.load(stream)
     return config
+
+app = Flask(__name__)
+application = app
+app.config.from_yaml(os.path.join(app.root_path, 'config.yml'))
+
+config = get_config()
+
+dir = os.listdir(config['SITE']['local_path'])
+print(config['SITE']['local_path'])
+
+remote_dir = config['SITE']['remote_path']
+print(remote_dir)
 
 def make_item(title, post_date, body):
     item = Entry(title, post_date, body)
@@ -37,7 +43,7 @@ class Entry(object):
 
 def check_for_title(file, slug):
     # print(file, slug)
-    with open('files/' + file, 'r') as f:
+    with open(dir + file, 'r') as f:
         txt = f.readlines()
         for i, line in enumerate(txt):
             if "title: " in txt[i]:
@@ -62,9 +68,21 @@ def index():
 
     content = []
 
-    for file in dir:
+    if config['SITE']['path_to_use'] == 'local':
+        path = config['SITE']['local_path']
+    elif config['SITE']['path_to_use'] == 'remote':
+        path = config['SITE']['remote_path']
+        req = requests.get(path).json()
+        print(req)
+
+        for f in req:
+            item = process_json_file(f)
+    else:
+        raise ValueError('No path defined in config')
+
+    for file in path:
         if not file.startswith('.'):
-            with open('files/' + file, 'r') as f:
+            with open(path + file, 'r') as f:
                 item = process_text_file(f)
 
                 content.append(item)
@@ -82,7 +100,7 @@ def single_post(slug):
     for file in dir:
         if not file.startswith('.'):
             # print('not a dotfile, opening and reading')
-            with open('files/' + file, 'r') as f:
+            with open(dir + file, 'r') as f:
                 if check_for_title(file, slug):
                     item = process_text_file(f)
                     return render_template('entry.html', content=item, nav=config['SOCIAL'], site=config['SITE'] )
@@ -104,6 +122,14 @@ def process_text_file(item):
 
     item = make_item(title, post_date, body)
     return item
+
+def process_json_file(item):
+    # item = process_text_file(item['download_url'])
+    req = requests.get(item['download_url'])
+    # content = base64.decodestring(req['content'])
+    print(req.json())
+    return False
+
 
 if __name__ == "__main__":
     app.run(DEBUG=True)
