@@ -146,6 +146,5 @@ def process_json_file(item):
 
     return item
 
-
 if __name__ == "__main__":
-    app.run(DEBUG=True)
+    app.run()
