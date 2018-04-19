@@ -16,12 +16,18 @@ PRODUCTION: &production
 
 SITE:
   title:    'Your Site Title'
+  desc:     'Your Site Description'
+
+  # Publised site path, no trailing '/'
+  home:     'https://your_site.com'
+
   # Define a file path as either `local` or `remote`
   # Local files can be any public, web server directory
   # Remote only supports GitHub repos right now
-  path_to_use: ''
+  path_to_use: 'remote'
 
   # Path to use for local files. Absolute paths are safer than relative
+  # Default is 'files/'
   local_path: 'files/'
 
   # Path to your GitHub repo. Change your :username, :repo, and :dir in the string.
@@ -36,3 +42,4 @@ SOCIAL:
   - {title: 'facebook', url: 'https://facebook.com'}
   - {title: 'github', url: 'https://github.com/'}
   - {title: 'about', url: 'Your homepage'}
+  - {title: 'rss', url: '/feed.rss' }
