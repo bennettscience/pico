@@ -24,7 +24,7 @@ SITE:
   # Define a file path as either `local` or `remote`
   # Local files can be any public, web server directory
   # Remote only supports GitHub repos right now
-  path_to_use: 'remote'
+  path_to_use: ''
 
   # Path to use for local files. Absolute paths are safer than relative
   # Default is 'files/'

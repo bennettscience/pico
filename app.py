@@ -90,7 +90,6 @@ def single_post(slug):
     config = get_config()
 
     if config['SITE']['path_to_use'] == 'local':
-        # path = config['SITE']['local_path']
         dir = os.listdir(path)
 
         for file in dir:
