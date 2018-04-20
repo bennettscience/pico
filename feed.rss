@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+   <channel>
+      <title>Your Site Title</title>
+      <description>Your Site Description</description>
+      <link>https://your_site.com</link>
+      <item>
+         <guid>reading-from-github</guid>
+         <link>https://your_site.com/files/reading-from-github</link>
+         <title>Reading from GitHub</title>
+         <description>I've made some changes to the structure of the Pico platform and <i>this</i> instance is now reading from a remote GitHub repository. It makes publishing easier because I don't have to connect to a server and copy files into a directory.</description>
+         <pubDate>2018-04-19</pubDate>
+         <author>Your name</author>
+      </item>
+      <item>
+         <guid>tiny-thoughts</guid>
+         <link>https://your_site.com/files/tiny-thoughts</link>
+         <title>Tiny Thoughts</title>
+         <description>Firing up a new section of the oh hey. This is a lighter-weight version of the blog, somewhere to put small, mostly unfiltered thoughts.</description>
+         <pubDate>2018-04-16</pubDate>
+         <author>Your name</author>
+      </item>
+   </channel>
+</rss>
