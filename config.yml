@@ -31,7 +31,7 @@ SITE:
   local_path: 'files/'
 
   # Path to your GitHub repo. Change your :username, :repo, and :dir in the string.
-  remote_path: 'https://api.github.com/repos/bennettscience/micro/contents/files'
+  remote_path: 'https://api.github.com/repos/:username/:repo/contents/:dir'
 
   # Appended to <author> tag in RSS feed if configured
   author:   'Your name'

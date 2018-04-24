@@ -30,6 +30,34 @@ You can also deploy on any compatible server environment [as documented on the F
 
 Edit `config.yml` with data you'd like to include. You can define your own object keys and values as well, but you'll need to modify templates in order for that data to be displayed on the site.
 
+Pico can be configured to read from two locations: A local file on your server or a GitHub repo. Set the flag in `config.yml` and specify your local and remote paths. Pico will pull text files from the specified location.
+
+```
+# Define a file path as either `local` or `remote`
+# Local files can be any public, web server directory
+# Remote only supports GitHub repos right now
+path_to_use: ''
+
+# Path to use for local files. Absolute paths are safer than relative
+# Default is 'files/'
+local_path: 'files/'
+
+# Path to your GitHub repo. Change your :username, :repo, and :dir in the string.
+remote_path: 'https://api.github.com/repos/:username/:repo/contents/:dir'
+```
+
+## RSS
+
+The Pico package comes with two RSS Python scripts: one to generate a feed based on local files and another if you're using GitHub.
+
+### Local RSS
+
+The local feed is using a modified version of [genRSS](https://github.com/amsehili/genRSS) by Amine SEHILI. You can set your feed up using a cron job on your server.
+
+### GitHub RSS
+
+GitHub provides some RSS feeds, but only at the commit level. The `jsonRss.py` script queries the GitHub Repos API and builds an RSS feed from the returned JSON object. It can also be configured to run using a cron job.
+
 ## Known Issues
 
   - The main layout uses a grid. This can cause some display differences depending on your browser.
